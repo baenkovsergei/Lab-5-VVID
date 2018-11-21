@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+int checkEnter(bool);
 int** createMasive(int, int);
 void printMassive(int**, int, int);
 void enterMasiveValue(int**, bool, int, int);
@@ -26,7 +27,7 @@ int main()
 		printf("3. Вывод массива на экран\n");
 		printf("0. Выход\n\n");
 		printf("Выберите пункт меню:");
-		scanf("%d", &menu);
+		menu = checkEnter(false);
 		switch (menu)
 		{
 		case 1:
@@ -35,8 +36,7 @@ int main()
 			printf("Для ввода значения с клавиатуры - 2\n");
 			printf("Для отмены - 0\n");
 
-			int podmenu = 0;
-			scanf("%d", &podmenu);/// Дополнительное меню с выбором способа ввода массива
+			int podmenu = checkEnter(false);					/// Дополнительное меню с выбором способа ввода массива
 			switch (podmenu)
 			{
 			case 1:
@@ -47,9 +47,9 @@ int main()
 				}
 
 				printf("Введите длинну масива: ");
-				scanf("%d", &lenght);                                    /// Ввод длинны массива
+				lenght = checkEnter(false);                                     /// Ввод длинны массива
 				printf("\nВведите ширину массива: ");
-				scanf("%d", &height);                                    /// Ввод ширины массива
+				height = checkEnter(false);                                     /// Ввод ширины массива
 
 				array = createMasive(height, lenght);
 
@@ -65,9 +65,9 @@ int main()
 				}
 
 				printf("Введите длинну масива: ");
-				scanf("%d", &lenght);  										/// Ввод длинны массива
+				lenght = checkEnter(false);										/// Ввод длинны массива
 				printf("\nВведите ширину массива: ");
-				scanf("%d", &height);
+				height = checkEnter(false);
 
 				array = createMasive(height, lenght);
 
@@ -165,6 +165,40 @@ int main()
 	return 0;
 }
 
+int checkEnter(bool subzero)
+{
+	char input[100];
+	scanf("%s", input);
+
+	bool correctInput = false;					/// Логическая переменная, которая определяет, правильно ли введено значение
+	while (!correctInput)
+	{
+		for (int i = 0; i < (strlen(input)); i++)
+		{
+			if (((((int)input[i] > 57) || ((int)input[i] < 48)) && ((int)input[i] != 45)) || ((strlen(input) == 1) && ((int)input[i] == 45)))
+			{
+				printf("Введены недопустимые символы\n");
+				printf("Введите корректное значение: ");
+				scanf("%s", input);
+				i = strlen(input);
+			}
+		}
+
+		if ((!subzero) && (atoi(input) < 0))
+		{
+			printf("Введено отрицательное значение\n");
+			printf("Введите корректное значение: ");
+			scanf("%s", input);
+		}
+		else
+		{
+			correctInput = true;
+		}
+	}
+
+	int value = atoi(input);				/// Перевод значения, введённого в строку, в переменную с типом int
+	return value;							/// Функция возвращает значение, полученное после успешной проверки
+}
 
 void printMassive(int** masive, int height, int lenght)
 {
@@ -200,7 +234,7 @@ void enterMasiveValue(int** masive, bool userEnter, int height, int lenght)
 			for (int l = 0; l < lenght; l++)
 			{
 				printf("Arr[%d][%d]= ", h + 1, l + 1);
-				scanf("%d", &masive[h][l]);
+				masive[h][l] = checkEnter(true);
 			}
 		}
 	}
@@ -225,3 +259,4 @@ void deleteMasive(int** masive, int height, int lenght)
 	free(masive);
 	masive = NULL;
 }
+
